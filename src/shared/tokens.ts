@@ -1,0 +1,17 @@
+export const N = {
+  navy: "#002045",
+  mint: "#B2F5EA",
+  mintSoft: "#E6FFFA",
+  mintMedium: "#81E6D9",
+  white: "#FFFFFF",
+  canvas: "#F7FAFC",
+  slateGray: "#4A5568",
+  textMain: "#17324D",
+  textSec: "#6B8297",
+  border: "#DCE6EF",
+  alertSoft: "#FFE4DC",
+  warnSoft: "#FFF0C8",
+  successSoft: "#DDF5EA",
+  adminAccent: "#E5EAFF",
+  navyLight: "#1A3A6B",
+} as const;
