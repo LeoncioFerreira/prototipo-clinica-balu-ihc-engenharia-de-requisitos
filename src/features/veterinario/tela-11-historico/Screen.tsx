@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Badge, TopBar } from "../../../components/ui/ClinicPrimitives";
 import { N } from "../../../shared/tokens";
 
-export function VetHistorico() {
+export function VetHistorico({ onOpenVaccine }: { onOpenVaccine: () => void }) {
   const [filter, setFilter] = useState("Todos");
   const entries = [
     {
@@ -51,7 +51,19 @@ export function VetHistorico() {
 
   return (
     <div className="flex flex-col h-full" style={{ background: N.canvas }}>
-      <TopBar title="Histórico e Evolução" subtitle="Thor · Carlos Lima" />
+      <TopBar
+        title="Histórico e Evolução"
+        subtitle="Thor · Carlos Lima"
+        actions={
+          <button
+            onClick={onOpenVaccine}
+            className="px-4 py-2 rounded-xl text-sm font-semibold text-white"
+            style={{ background: N.navy }}
+          >
+            Cadastrar vacina
+          </button>
+        }
+      />
       <div className="flex gap-5 px-7 py-5 flex-1 overflow-hidden">
         {/* Timeline */}
         <div className="flex-1 flex flex-col">

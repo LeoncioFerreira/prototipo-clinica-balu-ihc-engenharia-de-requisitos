@@ -7,6 +7,7 @@ describe("rotas funcionais da clínica", () => {
     ["r-checkin", "/recepcao/check-in", "reception"],
     ["v-fila", "/veterinario/fila", "vet"],
     ["v-prescricao", "/veterinario/prescricoes", "vet"],
+    ["v-vacina", "/veterinario/vacinas/nova", "vet"],
     ["a-visao", "/administracao/visao-geral", "admin"],
     ["a-config", "/administracao/configuracoes", "admin"],
   ] as const)("mapeia %s para %s", (screen, path, role) => {

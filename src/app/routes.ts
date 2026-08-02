@@ -13,6 +13,7 @@ const routes: Record<Screen, string> = {
   "v-prescricao": "/veterinario/prescricoes",
   "v-historico": "/veterinario/historico",
   "v-encerramento": "/veterinario/encerramento",
+  "v-vacina": "/veterinario/vacinas/nova",
   "a-visao": "/administracao/visao-geral",
   "a-funcionarios": "/administracao/funcionarios",
   "a-permissoes": "/administracao/permissoes",
