@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sidebar } from "../components/ui/ClinicPrimitives";
+import { Toaster } from "../components/ui/sonner";
 import { LoginScreen } from "../features/acesso/tela-01-login/Screen";
 import { AdminConfig } from "../features/administracao/tela-17-configuracoes/Screen";
 import { AdminFuncionarios } from "../features/administracao/tela-14-funcionarios/Screen";
@@ -17,14 +18,16 @@ import { VetEncerramento } from "../features/veterinario/tela-12-encerramento/Sc
 import { VetFila } from "../features/veterinario/tela-08-fila/Screen";
 import { VetHistorico } from "../features/veterinario/tela-11-historico/Screen";
 import { VetPrescricao } from "../features/veterinario/tela-10-prescricao/Screen";
+import { VetCadastroVacina } from "../features/veterinario/tela-18-cadastro-vacina/Screen";
 import { N } from "../shared/tokens";
-import type { Role, Screen } from "../shared/types";
+import type { Role, Screen, VaccineScreenOrigin } from "../shared/types";
 import { pathForScreen, roleForScreen, screenForPath } from "./routes";
 
 export default function App() {
   const initialScreen = screenForPath(window.location.pathname);
   const [screen, setScreen] = useState<Screen>(initialScreen);
   const [role, setRole] = useState<Role | null>(() => roleForScreen(initialScreen));
+  const [vaccineOrigin, setVaccineOrigin] = useState<VaccineScreenOrigin>("v-historico");
 
   const navigate = (nextScreen: Screen) => {
     window.history.replaceState({}, "", pathForScreen(nextScreen));
@@ -39,6 +42,11 @@ export default function App() {
   const handleLogout = () => {
     setRole(null);
     navigate("login");
+  };
+
+  const openVaccineScreen = (origin: VaccineScreenOrigin) => {
+    setVaccineOrigin(origin);
+    navigate("v-vacina");
   };
 
   if (screen === "login") return <LoginScreen onLogin={handleLogin} />;
@@ -60,13 +68,22 @@ export default function App() {
       case "v-fila":
         return <VetFila onNav={navigate} />;
       case "v-consulta":
-        return <VetConsulta onNav={navigate} />;
+        return (
+          <VetConsulta onNav={navigate} onOpenVaccine={() => openVaccineScreen("v-consulta")} />
+        );
       case "v-prescricao":
         return <VetPrescricao onNav={navigate} />;
       case "v-historico":
-        return <VetHistorico />;
+        return <VetHistorico onOpenVaccine={() => openVaccineScreen("v-historico")} />;
       case "v-encerramento":
         return <VetEncerramento onNav={navigate} />;
+      case "v-vacina":
+        return (
+          <VetCadastroVacina
+            onCancel={() => navigate(vaccineOrigin)}
+            onSaved={() => navigate(vaccineOrigin)}
+          />
+        );
       case "a-visao":
         return <AdminVisao onNav={navigate} />;
       case "a-funcionarios":
@@ -89,6 +106,7 @@ export default function App() {
     >
       <Sidebar role={role!} current={screen} onNav={navigate} onLogout={handleLogout} />
       <main className="flex flex-1 flex-col overflow-hidden">{renderScreen()}</main>
+      <Toaster />
     </div>
   );
 }

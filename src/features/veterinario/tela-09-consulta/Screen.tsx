@@ -4,7 +4,13 @@ import { TopBar } from "../../../components/ui/ClinicPrimitives";
 import { N } from "../../../shared/tokens";
 import type { Screen } from "../../../shared/types";
 
-export function VetConsulta({ onNav }: { onNav: (s: Screen) => void }) {
+export function VetConsulta({
+  onNav,
+  onOpenVaccine,
+}: {
+  onNav: (s: Screen) => void;
+  onOpenVaccine: () => void;
+}) {
   const [tab, setTab] = useState<"sintomas" | "diagnostico" | "conduta">("sintomas");
   return (
     <div className="flex flex-col h-full" style={{ background: N.canvas }}>
@@ -213,6 +219,13 @@ export function VetConsulta({ onNav }: { onNav: (s: Screen) => void }) {
                       style={{ background: N.adminAccent, color: "#2B4C8C" }}
                     >
                       Solicitar exame
+                    </button>
+                    <button
+                      onClick={onOpenVaccine}
+                      className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+                      style={{ background: N.navy }}
+                    >
+                      Cadastrar vacina
                     </button>
                   </div>
                 </div>

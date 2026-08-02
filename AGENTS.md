@@ -73,25 +73,26 @@ Componentes usados por várias telas ficam em `src/components/ui/`. Tipos e toke
 
 ## 5. Telas e rotas implementadas
 
-|  Nº | Área          | Pasta                   | Rota funcional                 | Responsabilidade                                             |
-| --: | ------------- | ----------------------- | ------------------------------ | ------------------------------------------------------------ |
-|  01 | Acesso        | `tela-01-login`         | `/login`                       | Entrada nos perfis de recepção, veterinário e administração. |
-|  02 | Recepção      | `tela-02-agenda`        | `/recepcao/agenda`             | Agenda diária e seleção de atendimento.                      |
-|  03 | Recepção      | `tela-03-check-in`      | `/recepcao/check-in`           | Confirmação de chegada e check-in do pet.                    |
-|  04 | Recepção      | `tela-04-tutores`       | `/recepcao/tutores`            | Busca e consulta de tutores.                                 |
-|  05 | Recepção      | `tela-05-vincular-pet`  | `/recepcao/vincular-pet`       | Solicitação de vínculo entre tutor, pet e clínica.           |
-|  06 | Recepção      | `tela-06-encaminhar`    | `/recepcao/encaminhar`         | Encaminhamento do atendimento ao veterinário.                |
-|  07 | Recepção      | `tela-07-retornos`      | `/recepcao/retornos`           | Controle de retornos da clínica.                             |
-|  08 | Veterinário   | `tela-08-fila`          | `/veterinario/fila`            | Fila de pets aguardando atendimento.                         |
-|  09 | Veterinário   | `tela-09-consulta`      | `/veterinario/consulta`        | Registro da consulta e avaliação clínica.                    |
-|  10 | Veterinário   | `tela-10-prescricao`    | `/veterinario/prescricoes`     | Prescrição de medicamentos e orientações.                    |
-|  11 | Veterinário   | `tela-11-historico`     | `/veterinario/historico`       | Histórico clínico do pet.                                    |
-|  12 | Veterinário   | `tela-12-encerramento`  | `/veterinario/encerramento`    | Encerramento e resumo da consulta.                           |
-|  13 | Administração | `tela-13-visao-geral`   | `/administracao/visao-geral`   | Indicadores gerais e visão operacional.                      |
-|  14 | Administração | `tela-14-funcionarios`  | `/administracao/funcionarios`  | Cadastro e gestão de funcionários.                           |
-|  15 | Administração | `tela-15-permissoes`    | `/administracao/permissoes`    | Matriz de permissões por perfil.                             |
-|  16 | Administração | `tela-16-relatorios`    | `/administracao/relatorios`    | Métricas, gráficos e relatórios.                             |
-|  17 | Administração | `tela-17-configuracoes` | `/administracao/configuracoes` | Dados da clínica, mensagens e integrações.                   |
+|  Nº | Área          | Pasta                     | Rota funcional                 | Responsabilidade                                             |
+| --: | ------------- | ------------------------- | ------------------------------ | ------------------------------------------------------------ |
+|  01 | Acesso        | `tela-01-login`           | `/login`                       | Entrada nos perfis de recepção, veterinário e administração. |
+|  02 | Recepção      | `tela-02-agenda`          | `/recepcao/agenda`             | Agenda diária e seleção de atendimento.                      |
+|  03 | Recepção      | `tela-03-check-in`        | `/recepcao/check-in`           | Confirmação de chegada e check-in do pet.                    |
+|  04 | Recepção      | `tela-04-tutores`         | `/recepcao/tutores`            | Busca e consulta de tutores.                                 |
+|  05 | Recepção      | `tela-05-vincular-pet`    | `/recepcao/vincular-pet`       | Solicitação de vínculo entre tutor, pet e clínica.           |
+|  06 | Recepção      | `tela-06-encaminhar`      | `/recepcao/encaminhar`         | Encaminhamento do atendimento ao veterinário.                |
+|  07 | Recepção      | `tela-07-retornos`        | `/recepcao/retornos`           | Controle de retornos da clínica.                             |
+|  08 | Veterinário   | `tela-08-fila`            | `/veterinario/fila`            | Fila de pets aguardando atendimento.                         |
+|  09 | Veterinário   | `tela-09-consulta`        | `/veterinario/consulta`        | Registro da consulta e avaliação clínica.                    |
+|  10 | Veterinário   | `tela-10-prescricao`      | `/veterinario/prescricoes`     | Prescrição de medicamentos e orientações.                    |
+|  11 | Veterinário   | `tela-11-historico`       | `/veterinario/historico`       | Histórico clínico do pet.                                    |
+|  12 | Veterinário   | `tela-12-encerramento`    | `/veterinario/encerramento`    | Encerramento e resumo da consulta.                           |
+|  13 | Administração | `tela-13-visao-geral`     | `/administracao/visao-geral`   | Indicadores gerais e visão operacional.                      |
+|  14 | Administração | `tela-14-funcionarios`    | `/administracao/funcionarios`  | Cadastro e gestão de funcionários.                           |
+|  15 | Administração | `tela-15-permissoes`      | `/administracao/permissoes`    | Matriz de permissões por perfil.                             |
+|  16 | Administração | `tela-16-relatorios`      | `/administracao/relatorios`    | Métricas, gráficos e relatórios.                             |
+|  17 | Administração | `tela-17-configuracoes`   | `/administracao/configuracoes` | Dados da clínica, mensagens e integrações.                   |
+|  18 | Veterinário   | `tela-18-cadastro-vacina` | `/veterinario/vacinas/nova`    | Cadastro mínimo para programar lembretes da próxima dose.    |
 
 Ao criar ou alterar uma rota autorizada, atualize `src/app/routes.ts`, os testes, o fallback da Vercel e esta tabela.
 
