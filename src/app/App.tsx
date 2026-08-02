@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { VetCadastroVacina } from "../features/veterinario/tela-18-cadastro-vacina/Screen";
+import { pathForScreen, roleForScreen, screenForPath } from "./routes";
 import {
   Calendar,
   CheckSquare,
@@ -66,6 +68,7 @@ type Screen =
   | "v-prescricao"
   | "v-historico"
   | "v-encerramento"
+  | "v-vacina"
   | "a-visao"
   | "a-funcionarios"
   | "a-permissoes"
@@ -2460,6 +2463,13 @@ function VetConsulta({ onNav }: { onNav: (s: Screen) => void }) {
                       Prescrever medicação
                     </button>
                     <button
+                      onClick={() => onNav("v-vacina")}
+                      className="px-5 py-2.5 rounded-xl text-sm font-semibold"
+                      style={{ background: N.mintSoft, color: N.navy }}
+                    >
+                      Cadastrar vacina
+                    </button>
+                    <button
                       className="px-5 py-2.5 rounded-xl text-sm font-semibold"
                       style={{ background: N.adminAccent, color: "#2B4C8C" }}
                     >
@@ -2865,7 +2875,7 @@ function VetPrescricao({ onNav }: { onNav: (s: Screen) => void }) {
 }
 
 // ─── Screen: Vet / Histórico ──────────────────────────────────────────────────
-function VetHistorico() {
+function VetHistorico({ onNav }: { onNav: (s: Screen) => void }) {
   const [filter, setFilter] = useState("Todos");
   const entries = [
     {
@@ -3028,6 +3038,13 @@ function VetHistorico() {
                 </span>
               </div>
             </div>
+            <button
+              onClick={() => onNav("v-vacina")}
+              className="mt-4 w-full py-2 rounded-xl text-xs font-bold"
+              style={{ background: N.navy, color: "white" }}
+            >
+              Cadastrar vacina
+            </button>
           </div>
         </div>
       </div>
@@ -4265,8 +4282,17 @@ function AdminConfig() {
 
 // ─── App Shell ────────────────────────────────────────────────────────────────
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("login");
-  const [role, setRole] = useState<Role | null>(null);
+  const [screen, setScreenState] = useState<Screen>(() => screenForPath(window.location.pathname));
+  const [role, setRole] = useState<Role | null>(
+    () => roleForScreen(screenForPath(window.location.pathname)) ?? "vet",
+  );
+  const [previousScreen, setPreviousScreen] = useState<Screen>("v-consulta");
+
+  const setScreen = (s: Screen) => {
+    setPreviousScreen(screen);
+    setScreenState(s);
+    window.history.pushState({}, "", pathForScreen(s));
+  };
 
   const handleLogin = (r: Role) => {
     setRole(r);
@@ -4301,9 +4327,16 @@ export default function App() {
       case "v-prescricao":
         return <VetPrescricao onNav={setScreen} />;
       case "v-historico":
-        return <VetHistorico />;
+        return <VetHistorico onNav={setScreen} />;
       case "v-encerramento":
         return <VetEncerramento onNav={setScreen} />;
+      case "v-vacina":
+        return (
+          <VetCadastroVacina
+            onCancel={() => setScreen(previousScreen)}
+            onSaved={() => setScreen(previousScreen)}
+          />
+        );
       case "a-visao":
         return <AdminVisao onNav={setScreen} />;
       case "a-funcionarios":
@@ -4324,7 +4357,7 @@ export default function App() {
       className="flex h-screen overflow-hidden"
       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", background: N.canvas }}
     >
-      <Sidebar role={role!} current={screen} onNav={setScreen} onLogout={handleLogout} />
+      <Sidebar role={role || "vet"} current={screen} onNav={setScreen} onLogout={handleLogout} />
       <main className="flex-1 flex flex-col overflow-hidden">{renderScreen()}</main>
     </div>
   );
