@@ -303,6 +303,19 @@ function TopBar({
   actions?: React.ReactNode;
 }) {
   const [openNotifications, setOpenNotifications] = useState(false);
+  const [openHelp, setOpenHelp] = useState(false);
+  const isReceptionHelp = ["Agenda", "Tutor", "Check-in", "Retorno"].some((term) =>
+    title.includes(term),
+  );
+  const isCareHelp = ["Consulta", "Fila", "Prescri", "Histórico", "Vacina"].some((term) =>
+    title.includes(term),
+  );
+  const helpArea = isReceptionHelp ? "Recepção" : isCareHelp ? "Atendimento" : "Administração";
+  const helpText = isCareHelp
+    ? "Confira o paciente antes de abrir o prontuário, registre a conduta e salve as alterações antes de encerrar."
+    : isReceptionHelp
+      ? "Use a busca para buscar tutor, pet ou atendimento. Os filtros e contadores ajudam a confirmar o resultado antes de continuar."
+      : "Use os indicadores para acompanhar a clínica e abra métricas adicionais quando precisar de mais detalhes.";
 
   return (
     <div
@@ -321,6 +334,13 @@ function TopBar({
       </div>
       <div className="flex items-center gap-3">
         {actions}
+        <button
+          onClick={() => setOpenHelp(true)}
+          className="px-3 py-2 rounded-xl border text-xs font-semibold"
+          style={{ borderColor: N.border, color: N.navy }}
+        >
+          Ajuda
+        </button>
         <div className="relative">
           <button
             onClick={() => setOpenNotifications(!openNotifications)}
@@ -383,6 +403,29 @@ function TopBar({
           )}
         </div>
       </div>
+      {openHelp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div
+            role="dialog"
+            aria-labelledby="context-help-title"
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+          >
+            <h2 id="context-help-title" className="font-bold" style={{ color: N.textMain }}>
+              Ajuda {helpArea === "Atendimento" ? "do" : "da"} {helpArea}
+            </h2>
+            <p className="mt-3 text-sm" style={{ color: N.textSec }}>
+              {helpText}
+            </p>
+            <button
+              onClick={() => setOpenHelp(false)}
+              className="mt-5 w-full rounded-xl py-2.5 text-sm font-bold text-white"
+              style={{ background: N.navy }}
+            >
+              Entendi
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -435,8 +478,15 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [forgotModal, setForgotModal] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   const simulate = (role: Role) => {
+    const nextErrors = {
+      email: /\S+@\S+\.\S+/.test(email) ? undefined : "Informe um e-mail válido.",
+      password: password.trim() ? undefined : "Informe sua senha.",
+    };
+    setErrors(nextErrors);
+    if (nextErrors.email || nextErrors.password) return;
     setLoading(role);
     setTimeout(() => {
       setLoading(null);
@@ -631,6 +681,8 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? "login-email-error" : undefined}
                   placeholder="seu@email.com"
                   className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                   style={{
@@ -648,6 +700,11 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
                     e.target.style.boxShadow = "none";
                   }}
                 />
+                {errors.email && (
+                  <p id="login-email-error" className="mt-1 text-xs text-red-700">
+                    {errors.email}
+                  </p>
+                )}
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
@@ -667,6 +724,8 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  aria-invalid={Boolean(errors.password)}
+                  aria-describedby={errors.password ? "login-password-error" : undefined}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                   style={{
@@ -684,6 +743,11 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
                     e.target.style.boxShadow = "none";
                   }}
                 />
+                {errors.password && (
+                  <p id="login-password-error" className="mt-1 text-xs text-red-700">
+                    {errors.password}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -785,7 +849,15 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
 }
 
 // ─── Search Input ─────────────────────────────────────────────────────────────
-function SearchInput({ placeholder }: { placeholder?: string }) {
+function SearchInput({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+}) {
   return (
     <div className="relative">
       <Search
@@ -796,6 +868,8 @@ function SearchInput({ placeholder }: { placeholder?: string }) {
       <input
         className="pl-9 pr-4 py-2 rounded-xl border text-sm bg-white outline-none w-56"
         placeholder={placeholder ?? "Buscar..."}
+        value={value}
+        onChange={(event) => onChange?.(event.target.value)}
         style={{ borderColor: N.border, color: N.textMain, fontFamily: "inherit" }}
       />
     </div>
@@ -1383,6 +1457,7 @@ function ReceptionTutores() {
       phone: "(11) 99874-2211",
       email: "carlos@email.com",
       pets: 2,
+      petNames: ["Thor", "Mia"],
     },
     {
       name: "Carla Mendes",
@@ -1390,8 +1465,17 @@ function ReceptionTutores() {
       phone: "(11) 91234-5678",
       email: "carla@email.com",
       pets: 1,
+      petNames: ["Luna"],
     },
   ];
+  const normalizedQuery = query.toLocaleLowerCase("pt-BR").trim();
+  const filteredResults = results
+    .map((result, index) => ({ result, index }))
+    .filter(({ result }) =>
+      [result.name, result.cpf, result.phone, result.email, ...result.petNames].some((value) =>
+        value.toLocaleLowerCase("pt-BR").includes(normalizedQuery),
+      ),
+    );
   return (
     <div className="flex flex-col h-full" style={{ background: N.canvas }}>
       <TopBar
@@ -1424,8 +1508,12 @@ function ReceptionTutores() {
                 }}
               />
             </div>
+            <p className="mb-3 text-xs" style={{ color: N.textSec }} aria-live="polite">
+              {filteredResults.length}{" "}
+              {filteredResults.length === 1 ? "tutor encontrado" : "tutores encontrados"}
+            </p>
             <div className="space-y-2">
-              {results.map((r, i) => (
+              {filteredResults.map(({ result: r, index: i }) => (
                 <div
                   key={i}
                   onClick={() => setSelected(i)}
@@ -2260,6 +2348,7 @@ function VetFila({ onNav }: { onNav: (s: Screen) => void }) {
 // ─── Screen: Vet / Consulta ───────────────────────────────────────────────────
 function VetConsulta({ onNav }: { onNav: (s: Screen) => void }) {
   const [tab, setTab] = useState<"sintomas" | "diagnostico" | "conduta">("sintomas");
+  const [saved, setSaved] = useState(false);
   return (
     <div className="flex flex-col h-full" style={{ background: N.canvas }}>
       <TopBar
@@ -2274,6 +2363,15 @@ function VetConsulta({ onNav }: { onNav: (s: Screen) => void }) {
           </div>
         }
       />
+      <div
+        role="status"
+        aria-label="Dados de simulação"
+        className="mx-7 mt-4 rounded-xl border px-4 py-2 text-xs"
+        style={{ background: N.warnSoft, borderColor: "#F6C453", color: "#744210" }}
+      >
+        Protótipo funcional: os dados deste atendimento são demonstrativos e não representam um
+        prontuário real.
+      </div>
       <div className="flex gap-5 px-7 py-5 flex-1 overflow-hidden">
         {/* Mini queue */}
         <div className="w-52 flex flex-col gap-2">
@@ -2483,6 +2581,7 @@ function VetConsulta({ onNav }: { onNav: (s: Screen) => void }) {
 
           <div className="flex gap-3">
             <button
+              onClick={() => setSaved(true)}
               className="flex-1 py-3 rounded-xl text-sm font-bold text-white"
               style={{ background: N.navy }}
             >
@@ -2496,6 +2595,16 @@ function VetConsulta({ onNav }: { onNav: (s: Screen) => void }) {
               Encerrar atendimento →
             </button>
           </div>
+          {saved && (
+            <div
+              role="status"
+              aria-label="Consulta salva"
+              className="rounded-xl px-4 py-2 text-xs font-semibold"
+              style={{ background: N.successSoft, color: "#276749" }}
+            >
+              Alterações salvas com sucesso.
+            </div>
+          )}
         </div>
 
         {/* Context panel */}
@@ -3055,6 +3164,7 @@ function VetHistorico({ onNav }: { onNav: (s: Screen) => void }) {
 // ─── Screen: Vet / Encerramento ───────────────────────────────────────────────
 function VetEncerramento({ onNav }: { onNav: (s: Screen) => void }) {
   const [requestReturn, setRequestReturn] = useState(true);
+  const [showPendingDialog, setShowPendingDialog] = useState(false);
   return (
     <div className="flex flex-col h-full" style={{ background: N.canvas }}>
       <TopBar title="Encerrar Consulta" subtitle="Thor · Carlos Lima · Consulta Geral" />
@@ -3167,7 +3277,7 @@ function VetEncerramento({ onNav }: { onNav: (s: Screen) => void }) {
 
           <div className="flex gap-3">
             <button
-              onClick={() => onNav("v-fila")}
+              onClick={() => setShowPendingDialog(true)}
               className="flex-1 py-3.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
               style={{ background: N.navy }}
             >
@@ -3216,6 +3326,45 @@ function VetEncerramento({ onNav }: { onNav: (s: Screen) => void }) {
           </div>
         </div>
       </div>
+      {showPendingDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div
+            role="dialog"
+            aria-labelledby="pending-title"
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+          >
+            <h2 id="pending-title" className="font-bold" style={{ color: N.textMain }}>
+              Alterações pendentes
+            </h2>
+            <p className="mt-3 text-sm" style={{ color: N.textSec }}>
+              As orientações ainda não foram salvas. Deseja encerrar mesmo assim?
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button
+                onClick={() => setShowPendingDialog(false)}
+                className="flex-1 rounded-xl border py-2.5 text-sm font-bold"
+                style={{ borderColor: N.border, color: N.navy }}
+              >
+                Continuar editando
+              </button>
+              <button
+                onClick={() => onNav("v-fila")}
+                className="flex-1 rounded-xl py-2.5 text-sm font-bold text-white"
+                style={{ background: N.navy }}
+              >
+                Encerrar sem salvar
+              </button>
+              <button
+                onClick={() => onNav("v-fila")}
+                className="flex-1 rounded-xl py-2.5 text-sm font-bold"
+                style={{ background: N.mint, color: N.navy }}
+              >
+                Salvar e encerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -3231,6 +3380,7 @@ const chartData = [
 ];
 
 function AdminVisao({ onNav }: { onNav: (s: Screen) => void }) {
+  const [showMoreMetrics, setShowMoreMetrics] = useState(false);
   return (
     <div className="flex flex-col h-full" style={{ background: N.canvas }}>
       <TopBar
@@ -3392,47 +3542,57 @@ function AdminVisao({ onNav }: { onNav: (s: Screen) => void }) {
           </div>
         </div>
 
+        <button
+          onClick={() => setShowMoreMetrics((visible) => !visible)}
+          className="w-full rounded-xl border py-2.5 text-sm font-bold"
+          style={{ borderColor: N.border, color: N.navy }}
+          aria-expanded={showMoreMetrics}
+        >
+          {showMoreMetrics ? "Ocultar métricas" : "Ver mais métricas"}
+        </button>
         {/* Performance strip */}
-        <div className="bg-white rounded-2xl border p-5" style={{ borderColor: N.border }}>
-          <h3 className="font-semibold text-sm mb-4" style={{ color: N.textMain }}>
-            Desempenho por veterinário
-          </h3>
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { name: "Dr. Lucas Melo", consultas: 12, retornos: 4, rating: 4.9 },
-              { name: "Dra. Carla Ramos", consultas: 8, retornos: 3, rating: 4.8 },
-              { name: "Dr. André Souza", consultas: 4, retornos: 4, rating: 4.7 },
-            ].map((v) => (
-              <div
-                key={v.name}
-                className="p-4 rounded-xl flex items-center gap-3"
-                style={{ background: N.canvas }}
-              >
+        {showMoreMetrics && (
+          <div className="bg-white rounded-2xl border p-5" style={{ borderColor: N.border }}>
+            <h3 className="font-semibold text-sm mb-4" style={{ color: N.textMain }}>
+              Desempenho por profissional
+            </h3>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { name: "Dr. Lucas Melo", consultas: 12, retornos: 4, rating: 4.9 },
+                { name: "Dra. Carla Ramos", consultas: 8, retornos: 3, rating: 4.8 },
+                { name: "Dr. André Souza", consultas: 4, retornos: 4, rating: 4.7 },
+              ].map((v) => (
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0"
-                  style={{ background: N.adminAccent, color: "#2B4C8C" }}
+                  key={v.name}
+                  className="p-4 rounded-xl flex items-center gap-3"
+                  style={{ background: N.canvas }}
                 >
-                  {v.name.split(" ")[1][0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm truncate" style={{ color: N.textMain }}>
-                    {v.name}
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0"
+                    style={{ background: N.adminAccent, color: "#2B4C8C" }}
+                  >
+                    {v.name.split(" ")[1][0]}
                   </div>
-                  <div className="text-xs" style={{ color: N.textSec }}>
-                    {v.consultas} consultas · {v.retornos} retornos
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-sm truncate" style={{ color: N.textMain }}>
+                      {v.name}
+                    </div>
+                    <div className="text-xs" style={{ color: N.textSec }}>
+                      {v.consultas} consultas · {v.retornos} retornos
+                    </div>
+                  </div>
+                  <div
+                    className="flex items-center gap-0.5 text-xs font-bold"
+                    style={{ color: "#D69E2E" }}
+                  >
+                    <Star size={12} fill="#D69E2E" />
+                    {v.rating}
                   </div>
                 </div>
-                <div
-                  className="flex items-center gap-0.5 text-xs font-bold"
-                  style={{ color: "#D69E2E" }}
-                >
-                  <Star size={12} fill="#D69E2E" />
-                  {v.rating}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -3441,6 +3601,7 @@ function AdminVisao({ onNav }: { onNav: (s: Screen) => void }) {
 // ─── Screen: Admin / Funcionários ─────────────────────────────────────────────
 function AdminFuncionarios() {
   const [selected, setSelected] = useState<number | null>(0);
+  const [query, setQuery] = useState("");
   const staff = [
     {
       name: "Dr. Lucas Melo",
@@ -3483,6 +3644,14 @@ function AdminFuncionarios() {
       since: "Jan/2023",
     },
   ];
+  const normalizedQuery = query.toLocaleLowerCase("pt-BR").trim();
+  const filteredStaff = staff
+    .map((person, index) => ({ person, index }))
+    .filter(({ person }) =>
+      [person.name, person.role, person.email].some((value) =>
+        value.toLocaleLowerCase("pt-BR").includes(normalizedQuery),
+      ),
+    );
   const sel = selected !== null ? staff[selected] : null;
 
   return (
@@ -3507,7 +3676,14 @@ function AdminFuncionarios() {
           style={{ borderColor: N.border }}
         >
           <div className="px-5 py-3.5 border-b flex gap-3" style={{ borderColor: N.border }}>
-            <SearchInput placeholder="Buscar funcionário..." />
+            <SearchInput
+              placeholder="Buscar funcionário..."
+              value={query}
+              onChange={(value) => {
+                setQuery(value);
+                setSelected(null);
+              }}
+            />
             <select
               className="px-4 py-2 rounded-xl border text-sm outline-none"
               style={{
@@ -3523,6 +3699,10 @@ function AdminFuncionarios() {
               <option>Administrador</option>
             </select>
           </div>
+          <p className="px-5 py-2 text-xs" style={{ color: N.textSec }} aria-live="polite">
+            {filteredStaff.length}{" "}
+            {filteredStaff.length === 1 ? "funcionário encontrado" : "funcionários encontrados"}
+          </p>
           <table className="w-full text-sm flex-1">
             <thead>
               <tr className="border-b text-left" style={{ borderColor: N.border }}>
@@ -3538,7 +3718,7 @@ function AdminFuncionarios() {
               </tr>
             </thead>
             <tbody>
-              {staff.map((s, i) => (
+              {filteredStaff.map(({ person: s, index: i }) => (
                 <tr
                   key={i}
                   onClick={() => setSelected(i)}
