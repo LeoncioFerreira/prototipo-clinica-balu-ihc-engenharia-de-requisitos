@@ -29,3 +29,31 @@ test("renderiza os 3 blocos de texto ZigZag atualizados na visão Clínica", () 
     )
   ).toBeInTheDocument();
 });
+
+test("renderiza a seção de Atores do Sistema com copy atualizada na visão Clínica", () => {
+  render(<Landing defaultView="clinica" />);
+
+  // Título da seção
+  expect(
+    screen.getByRole("heading", { name: "A ferramenta perfeita para cada profissional da sua clínica" })
+  ).toBeInTheDocument();
+
+  // Coluna 1 (Recepção Ágil)
+  expect(screen.getByRole("heading", { name: "Recepção Ágil" })).toBeInTheDocument();
+  expect(
+    screen.getByText(/Fim das filas e das confusões no balcão. Agendamentos rápidos, check-in em um clique e controle total da sala de espera./i)
+  ).toBeInTheDocument();
+
+  // Coluna 2 (Foco no Paciente)
+  expect(screen.getByRole("heading", { name: "Foco no Paciente" })).toBeInTheDocument();
+  expect(
+    screen.getByText(/Prontuário focado e limpo. Menos cliques preenchendo formulários e mais tempo olhando no olho do tutor./i)
+  ).toBeInTheDocument();
+
+  // Coluna 3 (Controle Total)
+  expect(screen.getByRole("heading", { name: "Controle Total" })).toBeInTheDocument();
+  expect(
+    screen.getByText(/Visão em tempo real do faturamento e produtividade. Tome decisões baseadas em dados seguros, de qualquer lugar./i)
+  ).toBeInTheDocument();
+});
+

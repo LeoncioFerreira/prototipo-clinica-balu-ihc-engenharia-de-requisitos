@@ -381,28 +381,28 @@ export function Landing({ defaultView = "tutor" }: { defaultView?: "tutor" | "cl
 
               {/* Atores do Sistema */}
               <div className="container mx-auto px-6 max-w-4xl pt-8 pb-24 text-center">
-                <h2 className="text-3xl font-black mb-10" style={{ color: N.navy }}>Feito para todos os atores da sua clínica</h2>
+                <h2 className="text-3xl font-black mb-10" style={{ color: N.navy }}>A ferramenta perfeita para cada profissional da sua clínica</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="p-8 rounded-3xl border" style={{ borderColor: N.border, backgroundColor: N.white }}>
                     <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4" style={{ backgroundColor: N.adminAccent }}>
                       <ClipboardList className="w-8 h-8" style={{ color: N.navyLight }} />
                     </div>
-                    <h3 className="font-bold text-xl mb-2" style={{ color: N.textMain }}>Recepção</h3>
-                    <p className="text-sm" style={{ color: N.textSec }}>Controle de fila, check-in, agendamentos e visualização rápida de retornos pendentes.</p>
+                    <h3 className="font-bold text-xl mb-2" style={{ color: N.textMain }}>Recepção Ágil</h3>
+                    <p className="text-sm" style={{ color: N.textSec }}>Fim das filas e das confusões no balcão. Agendamentos rápidos, check-in em um clique e controle total da sala de espera.</p>
                   </div>
                   <div className="p-8 rounded-3xl border" style={{ borderColor: N.border, backgroundColor: N.white }}>
                     <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4" style={{ backgroundColor: N.mintSoft }}>
                       <ShieldCheck className="w-8 h-8" style={{ color: N.navy }} />
                     </div>
-                    <h3 className="font-bold text-xl mb-2" style={{ color: N.textMain }}>Veterinário</h3>
-                    <p className="text-sm" style={{ color: N.textSec }}>Prontuários focados, histórico unificado e preenchimento ágil durante a consulta.</p>
+                    <h3 className="font-bold text-xl mb-2" style={{ color: N.textMain }}>Foco no Paciente</h3>
+                    <p className="text-sm" style={{ color: N.textSec }}>Prontuário focado e limpo. Menos cliques preenchendo formulários e mais tempo olhando no olho do tutor.</p>
                   </div>
                   <div className="p-8 rounded-3xl border" style={{ borderColor: N.border, backgroundColor: N.white }}>
                     <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4" style={{ backgroundColor: N.successSoft }}>
                       <Building2 className="w-8 h-8" style={{ color: "#276749" }} />
                     </div>
-                    <h3 className="font-bold text-xl mb-2" style={{ color: N.textMain }}>Administrador</h3>
-                    <p className="text-sm" style={{ color: N.textSec }}>Visão macro do negócio, gestão de permissões da equipe, faturamento e relatórios.</p>
+                    <h3 className="font-bold text-xl mb-2" style={{ color: N.textMain }}>Controle Total</h3>
+                    <p className="text-sm" style={{ color: N.textSec }}>Visão em tempo real do faturamento e produtividade. Tome decisões baseadas em dados seguros, de qualquer lugar.</p>
                   </div>
                 </div>
               </div>

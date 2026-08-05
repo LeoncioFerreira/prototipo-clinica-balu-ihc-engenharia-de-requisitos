@@ -1,6 +1,7 @@
 export type Role = "reception" | "vet" | "admin";
 
 export type Screen =
+  | "landing"
   | "login"
   | "r-agenda"
   | "r-checkin"

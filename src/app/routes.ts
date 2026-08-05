@@ -1,6 +1,7 @@
 import type { Role, Screen } from "../shared/types";
 
 const routes: Record<Screen, string> = {
+  landing: "/",
   login: "/login",
   "r-agenda": "/recepcao/agenda",
   "r-checkin": "/recepcao/check-in",

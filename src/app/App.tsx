@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Landing } from "../features/landing/Landing";
 import { VetCadastroVacina } from "../features/veterinario/tela-18-cadastro-vacina/Screen";
 import { pathForScreen, roleForScreen, screenForPath } from "./routes";
 import {
@@ -56,6 +57,7 @@ import {
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Role = "reception" | "vet" | "admin";
 type Screen =
+  | "landing"
   | "login"
   | "r-agenda"
   | "r-checkin"
@@ -4484,6 +4486,7 @@ export default function App() {
     setScreen("login");
   };
 
+  if (screen === "landing") return <Landing />;
   if (screen === "login") return <LoginScreen onLogin={handleLogin} />;
 
   const renderScreen = () => {
